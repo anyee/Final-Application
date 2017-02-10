@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+  <meta charset="utf-8">
+  <title>Google maps</title>
+  <link rel="stylesheet" type="text/css" href="./css/style.css">
+  <link rel="stylesheet" type="text/css" href="./css/main.css">
+  <script type="text/javascript" src="./js/jquery-1.7.2.min.js"></script>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCV_y77p_CW0BOHBVblCGAO9dbeLqIxrTg&sensor=false&libraries=geometry"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCV_y77p_CW0BOHBVblCGAO9dbeLqIxrTg&libraries=places&callBack" async defer></script>
+  <script type="text/javascript">
+    var longitude = 0;
+    var latitude = 0;
+    var lock = true;
+    function getLocation(){
+        var options={
+           enableHighAccuracy:true, 
+           maximumAge:1000
+       }
+       if(navigator.geolocation){
+           navigator.geolocation.watchPosition(onSuccess);
+       }else{}
+  }
+    function onSuccess(position){
+        longitude =position.coords.longitude;
+        latitude = position.coords.latitude;
+        if(lock){
+          initMap();
+          lock
+        }
+    }
+    function onError(error){
+        switch(error.code){
+            case 1:
+              alert("Refuse location");
+              break;
+            case 2:
+              alert("Location is temporarily unavailable");
+              break;
+            case 3:
+              alert("Get information timeout");
+              break;
+            case 4:
+              alert("unknown mistake");
+            break;
+        }
+    }
+    window.onload=getLocation;
+    </script>
+    <script>
+    var map;
+    var pyrmont;
+    var myMarker;
+    var infowindow;
+    var image = './images/wc.png';
+    var dataList;
+
+    function initMap() {
+    pyrmont = {lat: latitude, lng: longitude};
+        
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: pyrmont,
+        zoom: 17
+    });
+
+      infowindow = new google.maps.InfoWindow();
+      var service = new google.maps.places.PlacesService(map);
+      service.nearbySearch({
+          location: pyrmont,
+          radius: 100,
+          types: ['bathroom']
+      }, callback);
+      myMarker = new google.maps.Marker({
+          map: map,
+          position: pyrmont,
+          icon:image
+        });
+      var cityCircle = new google.maps.Circle({
+      strokeColor: '#09C7F7',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#09C7F7',
+      fillOpacity: 0.35,
+      map: map,
+      center: pyrmont,
+      radius: Math.sqrt(2) * 100
+    });
+    }
+
+    function callback(results, status) {
+      dataList = results;
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log("is run");
+        for (var i = 0; i < results.length; i++) {
+          createMarker(results[i],i);
+        }
+        setListData();
+      }
+    }
+
+    function createMarker(place,i) {
+        var placeLoc = place.geometry.location;
+        var marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location,
+          icon:image
+        });
+        var meters = google.maps.geometry.spherical.computeDistanceBetween(myMarker.getPosition(), marker.getPosition());
+        dataList[i]['meters'] = meters;
+        console.log(place.name+" Near  "+meters+"Meter");
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(place.name);
+          infowindow.open(map, this);
+        });
+    }
+    function setListData(){
+      var html='';
+      html+='<div class="header">';
+      html+='<span class="title">Toilet Finder</span>';
+      html+='<a class="fr header-btn add" href="javascript:;"></a>'
+      html+=' </div>'
+      for (var i = dataList.length - 1; i >= 0; i--) {  
+        html+='<div class="data">';
+        html+='<div class="top">';
+        html+='<span class="name">'+dataList[i]['name']+'</span>';
+        html+='<span class="distance">'+parseInt(dataList[i]['meters'])+' meters</span>';
+        html+='<button type="button" class="edit-btn"></button>';
+        html+='</div>';
+        html+='<div class="other">';
+        html+='<a class="fl star"></a>';
+        html+='<a class="fl star"></a>';
+        html+='<a class="fl star"></a>';
+        html+='<a class="fl star"></a>';
+        html+='<a class="fl star"></a>';
+        html+='<a class="fr btn deformity"></a>';
+        html+='<a class="fr btn">FREE</a>';
+        html+='</div>';
+        html+='</div>';
+      }
+      $(".datalist").html(html);
+    }
+    </script>
+</head>
+<body>
+<div class="main hidden">
+  <div class="header">
+    <a class="fl header-btn list" href="javascript:;"></a>
+    <span class="title">Toilet Finder</span>
+    <a class="fr header-btn add" href="javascript:;"></a>
+  </div>
+  <div class="center" style="height: 400px;">
+    <div id="map" style="height: 100%;width: 100%;border:0px;margin: 0px;padding: 0px;"></div>
+  </div>
+  <div class="data buttom">
+    <div class="top">
+      <span class="name">William Road</span>
+      <span class="distance">98 meters</span>
+      <button type="button" class="edit-btn"></button>
+    </div>
+    <div class="other">
+      <a class="fl star"></a>
+      <a class="fl star"></a>
+      <a class="fl star"></a>
+      <a class="fl star"></a>
+      <a class="fl star"></a>
+      <a class="fr btn deformity"></a>
+      <a class="fr btn">FREE</a>
+    </div>
+  </div>
+</div>
+<div class="main datalist">
+  <p class="centerText pd-20" style="color:#c3c3c3;">Loading……</p>
+</div>
+    <script type="text/javascript">
+$(document).on("click",".datalist .data",function(){
+  $(".main").removeClass("hidden");
+  $(".datalist").addClass("hidden");
+  var name = $(this).find("span.name").html();
+  var distance = $(this).find("span.distance").html();
+  $(".buttom").find("span.name").html(name);
+  $(".buttom").find("span.distance").html(distance);
+});
+$(".list").click(function(){
+  $(".main").addClass("hidden");
+  $(".datalist").removeClass("hidden");
+});
+</script>
+</body>
+</html>

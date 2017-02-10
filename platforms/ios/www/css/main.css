@@ -1,0 +1,25 @@
+
+.main .header{position: relative;height: 50px;background-color: #447cce;color: #fff;text-align: center;line-height: 50px;}
+.main .header span.title{font-size: 18px;}
+.main .header a.header-btn{display: inline-block;width: 30px;height: 30px;position: relative;top: 10px;}
+.main .header a.list{left: 10px;background-image: url('../images/list.png');background-size: 100% 100%;background-repeat: no-repeat;}
+.main .header a.add{right: 10px;background-image: url('../images/add.png');background-size: 100% 100%;background-repeat: no-repeat;}
+
+.main .center{width: 100%;}
+
+
+.main .data{position: relative;padding: 10px 15px;width: calc(100% - 30px);height: 90px;}
+.main .buttom{position: fixed;bottom: 0px;height: 90px;padding: 10px 15px;width: calc(100% - 30px);}
+.main .data .top{position: relative;height: 50px;}
+.main .data .top span{position: relative;display: block;}
+.main .data .top .name{color: #c6c6c6;font-size: 17px;}
+.main .data .top .distance{font-size: 15px;color: #447cce;text-indent: 20px;margin-top: 10px;background-image: url('../images/address.png');background-size: 17px;background-repeat: no-repeat;}
+.main .data .top .edit-btn{height: 30px;width: 30px;position: absolute;right: 10px;top: 10px;background-image: url('../images/edit.png');background-size: 100% 100%;background-repeat: no-repeat;background-color: #fff;}
+
+.main .data .other{position: relative;margin-top: 10px;}
+.main .data .other a{display: inline-block;width: 20px;height: 20px;margin: 0px 3px;}
+.main .data .other a.star{background-image: url('../images/star.png');background-size: 100% 100%;background-repeat: no-repeat;}
+.main .data .other a.btn{border-radius:20px;line-height: 20px;border:1px solid #beda7c;color: #acd23a;width: auto;padding: 3px 10px;margin-top: -4px;}
+.main .data .other a.deformity{width: 20px;background-image: url('../images/deformity.png');background-size: 25px 25px;background-repeat: no-repeat;background-position: center;}
+
+.datalist .data{cursor: pointer;}
